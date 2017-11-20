@@ -6,30 +6,73 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.Net;
+using System.Net.Sockets;
 using System.Threading;
 
-namespace WindowsFormsApplication1
+namespace client
 {
     public partial class Form1 : Form
     {
-        serv Serv_sock = new serv();
+        Sendrec Sendrec = new Sendrec();
+
         public Form1()
         {
-           InitializeComponent();
-           label1.Text = serv.ip;
+            InitializeComponent();
         }
-        public void starserv_Click(object sender, EventArgs e)
+        public string getip()
         {
-            Thread Thread_sock = new Thread(Serv_sock.Start);
-            Thread_sock.Start();
+            return textBox2.Text;
         }
-        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        public string getmessage()
         {
-            Serv_sock.Close_form();
+            return textBox1.Text;
         }
-
         private void Form1_Load(object sender, EventArgs e)
         {
+
         }
+
+        private void textBox2_TextChanged(object sender, EventArgs e)
+        {
+             
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            Sendrec.SendMessageFromSocket(this);
+        }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            //if (sendes != null)
+            //    sendes.Close();
+        }
+
+        private void richTextBox1_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+        private void button2_Click(object sender, EventArgs e)
+        {
+            Sendrec.connect(this);
+            var receivServ = new Thread(Sendrec.RecServ);
+			receivServ.Start(this);
+        }
+
+	    public void AppendText(string text)
+	    {
+			if (InvokeRequired)
+			{
+				Invoke(new Action<string>(AppendText), new object[] { text });
+				return;
+			}
+			richTextBox1.Text += text + "\r\n";
+		}
     }
 }
